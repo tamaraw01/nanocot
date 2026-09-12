@@ -1,0 +1,23 @@
+# Python artifact exclusions
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environment & Config
+.env
+.env.*
+*.local
+*.log
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Virtual Environment
+.venv/
+env/
+venv/
+GUMROAD_COPY.txt
