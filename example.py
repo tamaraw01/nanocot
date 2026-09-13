@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-NanoCoT – Reasoning Proxy for Small LLM Models
-Example: Classify requests and apply reasoning dynamically
+NanoCoT Example: Demonstrating complexity classification and response sanitization
 """
 
 import asyncio
@@ -17,7 +16,7 @@ async def demo():
         {"role": "user", "content": "What is 2 + 2?"}
     ]
     is_complex = classifier.classify(simple_msgs)
-    print(f"Simple query 'What is 2 + 2?' – Complex: {is_complex}")
+    print(f"Simple query 'What is 2 + 2?' - Complex: {is_complex}")
     
     # Example 2: Complex request
     complex_msgs = [
