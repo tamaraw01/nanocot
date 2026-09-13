@@ -1,6 +1,5 @@
 """
-NanoCoT Proxy Engine - Core Modules
-Dynamic Budgeted CoT & Physical Response Sanitizer for Small/Combo LLMs.
+NanoCoT Core Engine: Complexity Classification, Reasoning Injection, Response Sanitization
 """
 
 import re
@@ -10,8 +9,8 @@ from typing import List, Dict, Any, Tuple, AsyncGenerator
 
 class ComplexityClassifier:
     """
-    Evaluates prompt complexity to determine if Micro-CoT is required.
-    Bypasses CoT for simple formatting, direct lookup, greeting, or minor tasks.
+    Evaluates request complexity to route simple and complex queries differently.
+    Simple requests bypass reasoning. Complex requests receive reasoning budget.
     """
     
     SIMPLE_PATTERNS = [
@@ -56,8 +55,8 @@ class ComplexityClassifier:
 
 class MicroCoTInjector:
     """
-    Injects compressed, budget-enforced Chain-of-Thought instructions.
-    Forces model to reason within <nanocot_think> tags with strict word limits.
+    Adds a reasoning budget to system prompt for complex tasks.
+    Limits reasoning to 80 words to keep response time fast.
     """
 
     SYSTEM_PROMPT = (
@@ -93,8 +92,8 @@ class MicroCoTInjector:
 
 class PhysicalResponseSanitizer:
     """
-    Strips out <nanocot_think>...</nanocot_think> and raw reasoning blocks physically
-    from non-streaming and streaming responses so the client receives 100% clean output.
+    Removes reasoning tags from model responses.
+    Operates on both standard and streaming responses.
     """
 
     THINK_REGEX = re.compile(r"<nanocot_think>.*?</nanocot_think>", re.DOTALL | re.IGNORECASE)

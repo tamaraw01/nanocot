@@ -1,8 +1,10 @@
 # Contributing to NanoCoT
 
-Contributions are welcome. Open an issue to discuss changes before submitting a pull request.
+Contributions are welcome. Here's how to help.
 
-## Development Setup
+## Getting Started
+
+Clone and install:
 
 ```bash
 git clone https://github.com/tamaraw01/nanocot.git
@@ -10,30 +12,47 @@ cd nanocot
 pip install -r requirements.txt
 ```
 
-## Testing
+## Before Submitting
 
-Run the test suite before committing:
+Run the test suite:
 
 ```bash
 python3 test_engine.py
 ```
 
-All tests must pass. Add tests for new features.
+All tests must pass.
 
 ## Code Style
 
-- Keep functions focused and under 50 lines when possible.
-- Write docstrings for all public methods.
+- Keep functions under 50 lines when possible.
+- Add docstrings to all public methods.
 - Use type hints.
+- Keep code readable over clever.
 
-## Reporting Issues
+## Adding Tests
 
-Include:
+If you add a feature, add a test for it. Keep tests simple and focused.
+
+## Opening an Issue
+
+Include these details:
+
+- What were you trying to do?
+- What happened instead?
+- Python version and OS
 - Steps to reproduce
-- Expected behavior
-- Actual behavior
-- Python version and platform
+
+## Submitting a Pull Request
+
+Describe what your change does. If it relates to an open issue, reference it.
+
+Before submitting:
+
+1. Run tests (`python3 test_engine.py`)
+2. Commit with a clear message
+3. Push to your fork
+4. Open the PR
 
 ## License
 
-By contributing, you agree your work is licensed under the MIT License.
+By contributing, your work is licensed under the MIT License.

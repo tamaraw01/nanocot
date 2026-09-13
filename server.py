@@ -1,7 +1,5 @@
 """
 NanoCoT OpenAI-Compatible Proxy Server
-Routes requests to an upstream provider (OpenRouter, OpenAI, or any router) while applying
-Dynamic Micro-CoT and Physical Response Sanitization.
 """
 
 import os
@@ -16,7 +14,7 @@ from core import ComplexityClassifier, MicroCoTInjector, PhysicalResponseSanitiz
 
 app = FastAPI(
     title="NanoCoT Proxy Engine",
-    description="Ultra-fast Token-Budgeted Reasoning & Physical Response Sanitizer Proxy",
+    description="Reasoning proxy for small and combo language models",
     version="1.0.0"
 )
 
@@ -48,7 +46,7 @@ async def health_check():
 
 @app.get("/v1/models")
 async def list_models():
-    """Proxy models endpoint."""
+    """Return available models from upstream provider."""
     async with httpx.AsyncClient(timeout=30.0) as client:
         try:
             resp = await client.get(
@@ -76,7 +74,7 @@ async def chat_completions(request: Request):
     messages = body.get("messages", [])
     stream = body.get("stream", False)
     
-    # 1. Complexity Classification
+    # Route: simple requests go directly, complex requests get reasoning budget
     is_complex = classifier.classify(messages)
     
     # 2. Inject Micro-CoT if complex

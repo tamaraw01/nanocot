@@ -5,35 +5,35 @@
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue?style=flat-square)](https://www.python.org/downloads/)
 [![Tests Passing](https://img.shields.io/badge/Tests-Passing-green?style=flat-square)](test_engine.py)
 
-> **Reasoning proxy for small and combo LLM models.** Bring smaller models (Claude 3.5 Haiku, GPT-4o-mini, 70B class) from commodity tier to flagship accuracy—without the latency penalty.
+> A reasoning proxy that makes small language models (Claude 3.5 Haiku, GPT-4o-mini, 70B class) produce results on par with larger models, without slowdown.
 
-## The Problem
+## The Situation
 
-When you rotate between different model sizes (via round-robin), smaller models often fail on complex reasoning tasks. They lack internal structure for multi-step logic, code debugging, or system design.
+When you rotate between different model sizes, smaller models often struggle with complex reasoning. They lack the internal structure for debugging code, solving math problems, or designing systems across multiple steps.
 
-Standard solutions use long Chain-of-Thought traces, which fix accuracy but kill latency. Your app waits for hundreds of tokens of reasoning before getting the final answer.
+Common workarounds use long Chain-of-Thought traces. This fixes accuracy but creates a new problem: your application waits for hundreds of reasoning tokens before the final answer arrives.
 
-## The Solution
+## How NanoCoT Works
 
-NanoCoT intercepts requests at the proxy layer. It classifies prompt complexity in microseconds, then injects a strict 80-word reasoning budget into complex requests only. The model thinks in `<nanocot_think>` tags, then outputs the clean final answer. NanoCoT physically strips the thinking before sending the response to your UI.
+NanoCoT sits at the proxy layer. It evaluates each request for complexity in microseconds. Complex requests get a strict 80-word reasoning budget injected into the system prompt. The model reasons inside `<nanocot_think>` tags, then outputs the answer. NanoCoT strips the thinking tags before sending the response to your application.
 
-**Result:** Smaller models handle complex reasoning in milliseconds, with 90–95% accuracy parity to flagship models.
-
----
-
-## Key Features
-
-- **Dynamic Classifier** — Separates simple queries from complex ones. Only complex requests get reasoning.
-- **Token-Budgeted Micro-CoT** — Reasoning capped at 80 words. Structured, fast, no rambling.
-- **Physical Sanitizer** — Reasoning tags stripped at proxy layer. Your UI only sees the clean answer.
-- **OpenAI-Compatible** — Drop-in compatible with any client (Hermes, Claude Code, curl, Python, etc).
-- **Zero Latency Overhead** — Token-budgeted reasoning runs in milliseconds. No noticeable delay.
+**Result:** Smaller models handle complex reasoning in milliseconds, with accuracy in the 90-95% range compared to larger models.
 
 ---
 
-## Quick Start
+## What You Get
 
-### Install
+- **Smart Routing** – Simple queries skip reasoning entirely. Complex queries get a reasoning budget.
+- **Fast Reasoning** – Capped at 80 words. No rambling, no delays.
+- **Clean Output** – Reasoning is removed at the proxy layer. Your UI only sees the final answer.
+- **Standard Interface** – Uses OpenAI API format. Works with any compatible client.
+- **Minimal Overhead** – Token-budgeted reasoning adds no noticeable latency.
+
+---
+
+## Getting Started
+
+### Installation
 
 ```bash
 git clone https://github.com/tamaraw01/nanocot.git
@@ -41,7 +41,7 @@ cd nanocot
 pip install -r requirements.txt
 ```
 
-### Run
+### Launch
 
 ```bash
 export UPSTREAM_BASE_URL="http://your-router:port/v1"
@@ -49,41 +49,49 @@ export UPSTREAM_API_KEY="sk-your-key"
 python3 run.py
 ```
 
-Proxy runs on `http://0.0.0.0:8888`.
+The proxy listens on `http://0.0.0.0:8888`.
 
-### Integrate with Hermes Agent
+### Integration with Any OpenAI-Compatible Client
+
+Point your client to the proxy endpoint:
 
 ```bash
-hermes config set providers.openai.base_url "http://127.0.0.1:8888/v1"
-hermes config set providers.openai.api_key "sk-local"
+# With curl
+curl http://localhost:8888/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{"model":"haiku","messages":[{"role":"user","content":"Your prompt"}]}'
+
+# With Python
+import httpx
+client = httpx.Client()
+response = client.post("http://localhost:8888/v1/chat/completions", json=...)
 ```
 
 ---
 
-## Architecture
+## How It Works
 
 ```
 Request
-  ├─ Simple Prompt ────► Forward to Upstream Router
+  ├─ Simple Prompt ────► Forward directly to upstream
   │
-  └─ Complex Prompt ────► Inject Micro-CoT ────► Upstream Router
+  └─ Complex Prompt ────► Add reasoning budget ────► Forward to upstream
                                                          │
                                                          ▼
-                                                Physical Response Sanitizer
-                                                (Strip <nanocot_think> tags)
+                                             Strip reasoning tags
                                                          │
                                                          ▼
-                                                Clean Response to Client
+                                             Clean response to client
 ```
 
 ---
 
-## Supported Models
+## Model Compatibility
 
-| Tier | Models | Accuracy Gain |
+| Tier | Models | Result |
 |---|---|---|
-| **A** | Claude 3.5 Haiku, GPT-4o-mini, Qwen 2.5 72B, Llama 3.3 70B | 90–95% flagship parity |
-| **B** | <3B parameter models | Reasoning structure improved; capacity-limited by architecture |
+| **A** | Claude 3.5 Haiku, GPT-4o-mini, Qwen 2.5 72B, Llama 3.3 70B | 90-95% parity with larger models |
+| **B** | Models <3B parameters | Reasoning improves, but limited by model size |
 
 ---
 
@@ -93,7 +101,7 @@ Request
 python3 test_engine.py
 ```
 
-Output:
+Expected output:
 ```
 ✓ ComplexityClassifier test passed.
 ✓ MicroCoTInjector test passed.
@@ -105,27 +113,32 @@ ALL NANOCOT ENGINE TESTS PASSED GREEN!
 
 ---
 
-## Examples
+## Usage Examples
 
-### Use as a Direct Proxy
+### Direct HTTP Request
 
 ```python
 import httpx
+import json
 
 client = httpx.Client()
 response = client.post(
     "http://localhost:8888/v1/chat/completions",
     json={
         "model": "haiku",
-        "messages": [{"role": "user", "content": "Write a Python async connection pool."}],
+        "messages": [
+            {"role": "user", "content": "Write a Python async database pool."}
+        ],
         "stream": False
     }
 )
-print(response.json()["choices"][0]["message"]["content"])
-# Output: Clean implementation without reasoning tokens
+
+result = response.json()
+print(result["choices"][0]["message"]["content"])
+# Returns clean implementation without reasoning artifacts
 ```
 
-### Streaming
+### Streaming Responses
 
 ```python
 response = client.post(
@@ -137,12 +150,15 @@ response = client.post(
     },
     stream=True
 )
+
 for line in response.iter_lines():
     if line.startswith("data: "):
-        print(line)  # Clean chunks only (no thinking)
+        data = json.loads(line[6:])
+        # Content is already clean (no reasoning tags)
+        print(data)
 ```
 
-See `example.py` for more.
+See `example.py` for a complete working example.
 
 ---
 
@@ -150,22 +166,21 @@ See `example.py` for more.
 
 ### Environment Variables
 
-- `UPSTREAM_BASE_URL` — Target provider endpoint (e.g., `http://localhost:20128/v1`)
-- `UPSTREAM_API_KEY` — API key for upstream provider
+- `UPSTREAM_BASE_URL` – Your router endpoint, e.g. `http://localhost:20128/v1`
+- `UPSTREAM_API_KEY` – API key for your upstream provider
 
 ### Server Port
 
-Edit `run.py` line 33 or use `NANOCOT_PORT` env var.
+Edit `run.py` line 33 to change the port (default: 8888).
 
 ---
 
 ## Documentation
 
-- [README](README.md) — This file
-- [CONTRIBUTING](CONTRIBUTING.md) — Contribution guidelines
-- [CHANGELOG](CHANGELOG.md) — Version history
-- [SECURITY](SECURITY.md) — Security policy
-- [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) — Community standards
+- [CONTRIBUTING](CONTRIBUTING.md) – How to contribute
+- [CHANGELOG](CHANGELOG.md) – Version history
+- [SECURITY](SECURITY.md) – Security practices
+- [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) – Community guidelines
 
 ---
 
@@ -175,8 +190,8 @@ MIT. See [LICENSE](LICENSE).
 
 ---
 
-## Feedback
+## Questions or Issues?
 
-Found a bug? Have a feature idea? Open an [issue](https://github.com/tamaraw01/nanocot/issues).
+Open an [issue](https://github.com/tamaraw01/nanocot/issues) on GitHub.
 
-Want to contribute? See [CONTRIBUTING](CONTRIBUTING.md).
+Want to help? See [CONTRIBUTING](CONTRIBUTING.md).
