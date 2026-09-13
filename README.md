@@ -23,11 +23,11 @@ NanoCoT sits at the proxy layer. It evaluates each request for complexity in mic
 
 ## What You Get
 
-- **Smart Routing** – Simple queries skip reasoning entirely. Complex queries get a reasoning budget.
-- **Fast Reasoning** – Capped at 80 words. No rambling, no delays.
-- **Clean Output** – Reasoning is removed at the proxy layer. Your UI only sees the final answer.
-- **Standard Interface** – Uses OpenAI API format. Works with any compatible client.
-- **Minimal Overhead** – Token-budgeted reasoning adds no noticeable latency.
+- **Smart Routing** — Simple queries skip reasoning entirely. Complex queries get a reasoning budget.
+- **Fast Reasoning** — Capped at 80 words. No rambling, no delays.
+- **Clean Output** — Reasoning is removed at the proxy layer. Your UI only sees the final answer.
+- **Standard Interface** — Uses OpenAI API format. Works with any compatible client.
+- **Minimal Overhead** — Token-budgeted reasoning adds no noticeable latency.
 
 ---
 
@@ -166,8 +166,8 @@ See `example.py` for a complete working example.
 
 ### Environment Variables
 
-- `UPSTREAM_BASE_URL` – Your router endpoint, e.g. `http://localhost:20128/v1`
-- `UPSTREAM_API_KEY` – API key for your upstream provider
+- `UPSTREAM_BASE_URL`: Your router endpoint, e.g. `http://localhost:20128/v1`
+- `UPSTREAM_API_KEY`: API key for your upstream provider
 
 ### Server Port
 
@@ -177,10 +177,10 @@ Edit `run.py` line 33 to change the port (default: 8888).
 
 ## Documentation
 
-- [CONTRIBUTING](CONTRIBUTING.md) – How to contribute
-- [CHANGELOG](CHANGELOG.md) – Version history
-- [SECURITY](SECURITY.md) – Security practices
-- [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) – Community guidelines
+- [CONTRIBUTING](CONTRIBUTING.md) — How to contribute
+- [CHANGELOG](CHANGELOG.md) — Version history
+- [SECURITY](SECURITY.md) — Security practices
+- [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) — Community guidelines
 
 ---
 
