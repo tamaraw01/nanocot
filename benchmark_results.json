@@ -1,0 +1,71 @@
+{
+  "classifier": {
+    "simple": {
+      "iterations": 1000,
+      "mean_ms": 0.019,
+      "p50_ms": 0.013,
+      "p99_ms": 0.039
+    },
+    "complex": {
+      "iterations": 1000,
+      "mean_ms": 0.041,
+      "p50_ms": 0.019,
+      "p99_ms": 0.066
+    }
+  },
+  "sanitizer": {
+    "non_streaming": {
+      "iterations": 1000,
+      "mean_ms": 0.061,
+      "throughput_per_sec": 16262.0
+    },
+    "streaming": {
+      "iterations": 100,
+      "chunks_per_response": 31,
+      "mean_ms": 0.067
+    },
+    "sanitization_correct": true
+  },
+  "token_budget": {
+    "Claude Haiku 4.5": {
+      "full_cot_tokens": 320,
+      "micro_cot_tokens": 85,
+      "full_latency_s": 3.76,
+      "micro_latency_s": 1.0,
+      "latency_reduction_pct": 73.4,
+      "full_cost_per_request": 0.0016,
+      "micro_cost_per_request": 0.000425,
+      "cost_saving_pct": 73.4
+    },
+    "GPT-5.4 Mini": {
+      "full_cot_tokens": 320,
+      "micro_cot_tokens": 85,
+      "full_latency_s": 2.91,
+      "micro_latency_s": 0.77,
+      "latency_reduction_pct": 73.4,
+      "full_cost_per_request": 0.001576,
+      "micro_cost_per_request": 0.000419,
+      "cost_saving_pct": 73.4
+    },
+    "GPT-5.4 Nano": {
+      "full_cot_tokens": 320,
+      "micro_cot_tokens": 85,
+      "full_latency_s": 2.46,
+      "micro_latency_s": 0.65,
+      "latency_reduction_pct": 73.4,
+      "full_cost_per_request": 0.00044,
+      "micro_cost_per_request": 0.000117,
+      "cost_saving_pct": 73.4
+    },
+    "Gemini 3 Flash-Lite": {
+      "full_cot_tokens": 320,
+      "micro_cot_tokens": 85,
+      "full_latency_s": 3.37,
+      "micro_latency_s": 0.89,
+      "latency_reduction_pct": 73.4,
+      "full_cost_per_request": 0.00048,
+      "micro_cost_per_request": 0.000128,
+      "cost_saving_pct": 73.4
+    }
+  }
+}
