@@ -1,6 +1,6 @@
 """
 NanoCoT OpenAI-Compatible Proxy Server
-Routes requests to upstream provider (9router / OpenRouter / OpenAI) while applying
+Routes requests to an upstream provider (OpenRouter, OpenAI, or any router) while applying
 Dynamic Micro-CoT and Physical Response Sanitization.
 """
 
@@ -32,7 +32,7 @@ classifier = ComplexityClassifier()
 injector = MicroCoTInjector()
 sanitizer = PhysicalResponseSanitizer()
 
-# Target upstream settings (Defaults to 9router / OpenRouter OpenAI compatible endpoint)
+# Target upstream settings (defaults to any OpenAI-compatible router endpoint)
 UPSTREAM_BASE_URL = os.getenv("UPSTREAM_BASE_URL", "http://localhost:20128/v1").rstrip("/")
 UPSTREAM_API_KEY = os.getenv("UPSTREAM_API_KEY", "sk-dummy")
 
